@@ -9,6 +9,7 @@ import Reanimated, {
   useSharedValue
 } from 'react-native-reanimated';
 import {Constants} from '../../commons/new';
+import { Platform } from 'react-native';
 
 const FIX_RTL = Constants.isRTL && Constants.isAndroid;
 
@@ -100,6 +101,7 @@ function PageCarousel(props: ScrollViewProps) {
     return [{width: pageWidth}, style];
   }, [pageWidth, style]);
 
+  const platformSpecificProps = Platform.OS === 'ios' ? { } : { onMomentumScrollEnd:handleOnMomentumScrollEnd };
   return (
     <Reanimated.ScrollView
       {...others}
@@ -112,7 +114,9 @@ function PageCarousel(props: ScrollViewProps) {
       scrollEventThrottle={16}
       contentOffset={initialOffset} // iOS only
       onLayout={scrollToInitial} // Android only
-      onMomentumScrollEnd={handleOnMomentumScrollEnd} // TODO: workaround for useAnimatedScrollHandler.onMomentumEnd not being called (https://github.com/software-mansion/react-native-reanimated/issues/2735)
+
+      {...platformSpecificProps}
+      // onMomentumScrollEnd={handleOnMomentumScrollEnd} // TODO: workaround for useAnimatedScrollHandler.onMomentumEnd not being called (https://github.com/software-mansion/react-native-reanimated/issues/2735)
     />
   );
 }
